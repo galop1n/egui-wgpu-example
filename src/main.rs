@@ -14,6 +14,24 @@ use winit::window::Icon;
 const INITIAL_WIDTH: u32 = 1920;
 const INITIAL_HEIGHT: u32 = 1080;
 
+use clap::Parser;
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+struct Args {
+    /// Show the egui demo app
+    #[arg(long, default_value_t = true)]
+    demo: bool,
+
+    /// Enable puffin profiling
+    #[arg(long, default_value_t = true)]
+    profile: bool,
+
+    /// Show puffin profiling
+    #[arg(long)]
+    profiler: bool,
+}
+
 /// A custom event type for the winit app.
 enum Event {
     RequestRedraw,
@@ -38,6 +56,10 @@ fn load_icon() -> Option<Icon> {
 
 /// A simple egui + wgpu + winit based example.
 fn main() {
+    let args = Args::parse();
+
+    puffin::set_scopes_on(args.profile);
+
     let event_loop = winit::event_loop::EventLoopBuilder::<Event>::with_user_event().build();
     let window = winit::window::WindowBuilder::new()
         .with_decorations(true)
@@ -99,7 +121,7 @@ fn main() {
     let mut egui_rpass = Renderer::new(&device, surface_format, None, 1);
 
     // Display the demo application that ships with egui.
-    let mut demo_app = egui_demo_lib::DemoWindows::default();
+    let mut demo_app = args.demo.then(egui_demo_lib::DemoWindows::default);
 
     let context = egui::Context::default();
 
@@ -118,6 +140,7 @@ fn main() {
 
         match event {
             RedrawRequested(..) => {
+                puffin::GlobalProfiler::lock().new_frame();
                 let output_frame = match surface.get_current_texture() {
                     Ok(frame) => frame,
                     Err(wgpu::SurfaceError::Outdated) => {
@@ -140,7 +163,13 @@ fn main() {
                 context.begin_frame(input);
 
                 // Draw the demo application.
-                demo_app.ui(&context);
+                if let Some(demo_app) = &mut demo_app {
+                    puffin::profile_scope!("demo_app");
+                    demo_app.ui(&context);
+                }
+                if args.profiler {
+                    puffin_egui::profiler_window(&context);
+                }
 
                 // End the UI frame. We could now handle the output and draw the UI with the backend.
                 let full_output = context.end_frame();

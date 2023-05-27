@@ -10,16 +10,26 @@ build = "build.rs"
 winres = "0.1.12"
 
 [dependencies]
-egui-wgpu = "0.22"
 chrono = "0.4"
 pollster = "0.3"
+clap = { version = "4.3.0", features = ["derive"] }
+
+# egui stuff
 egui = "0.22.0"
+egui-winit = { version = "0.22", features = ["puffin"] }
+egui-wgpu = { version = "0.22", features = ["puffin"] }
+egui_demo_lib = "0.22"
 epi = "0.17"
-egui-winit = "0.22"
+
+# low level
 wgpu = "0.16.1"
 winit = { version = "0.28.6", features = ["x11"] }
-egui_demo_lib = "0.22"
 ico = "0.3.0"
+
+# profiling
+puffin = "0.16"
+puffin_egui = "0.22"
+
 
 #[patch.crates-io]
 # egui = { version = "0.5", git = "https://github.com/emilk/egui" }
