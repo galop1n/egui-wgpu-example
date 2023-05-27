@@ -4,6 +4,10 @@ version = "0.1.0"
 #authors = ["Nils Hasenbanck <nils@hasenbanck.de>"]
 authors = ["Nicolas Silvagni <galopin@gmail.com>"]
 edition = "2021"
+build = "build.rs"
+
+[build-dependencies]
+winres = "0.1.12"
 
 [dependencies]
 egui-wgpu = "0.22"
@@ -15,6 +19,7 @@ egui-winit = "0.22"
 wgpu = "0.16.1"
 winit = { version = "0.28.6", features = ["x11"] }
 egui_demo_lib = "0.22"
+ico = "0.3.0"
 
 #[patch.crates-io]
 # egui = { version = "0.5", git = "https://github.com/emilk/egui" }

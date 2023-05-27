@@ -9,6 +9,8 @@ use egui_winit::State;
 use wgpu::InstanceDescriptor;
 use winit::event::Event::*;
 use winit::event_loop::ControlFlow;
+use winit::window::Icon;
+
 const INITIAL_WIDTH: u32 = 1920;
 const INITIAL_HEIGHT: u32 = 1080;
 
@@ -27,6 +29,13 @@ impl epi::backend::RepaintSignal for ExampleRepaintSignal {
     }
 }
 
+fn load_icon() -> Option<Icon> {
+    let file = include_bytes!("../assets/icon.ico");
+    let icon_dir = ico::IconDir::read(std::io::Cursor::new(file)).unwrap();
+    let image = icon_dir.entries()[0].decode().unwrap();
+    Icon::from_rgba(image.rgba_data().to_vec(), image.width(), image.height()).ok()
+}
+
 /// A simple egui + wgpu + winit based example.
 fn main() {
     let event_loop = winit::event_loop::EventLoopBuilder::<Event>::with_user_event().build();
@@ -39,6 +48,7 @@ fn main() {
             width: INITIAL_WIDTH,
             height: INITIAL_HEIGHT,
         })
+        .with_window_icon(load_icon())
         .build(&event_loop)
         .unwrap();
 
