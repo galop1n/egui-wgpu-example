@@ -8,30 +8,41 @@ build = "build.rs"
 
 [build-dependencies]
 winres = "0.1.12"
+egui = { version = "0.22", default-features = false, features = ["serde"] }
+serde = { version = "1.0.163", features = ["derive"] }
+ciborium = "0.2.1"
+lz4_flex = { version = "0.10.0" }
+ico = "0.3.0"
+
 
 [dependencies]
 chrono = "0.4"
 pollster = "0.3"
 clap = { version = "4.3.0", features = ["derive"] }
 
+# serialization stuff
+serde = { version = "1.0.163", features = ["derive"] }
+serde_yaml = "0.9.21"
+lz4_flex = { version = "0.10.0" }
+ciborium = "0.2.1"
+
 # egui stuff
-egui = "0.22.0"
+egui = { version = "0.22", default-features = false, features = [
+    "persistence",
+] }
 egui-winit = { version = "0.22", features = ["puffin"] }
 egui-wgpu = { version = "0.22", features = ["puffin"] }
-egui_demo_lib = "0.22"
-epi = "0.17"
+egui_demo_lib = { version = "0.22", features = ["serde"], optional = true }
 
 # low level
 wgpu = "0.16.1"
 winit = { version = "0.28.6", features = ["x11"] }
-ico = "0.3.0"
 
 # profiling
 puffin = "0.16"
 puffin_egui = "0.22"
+notify = "6.0.0"
 
-
-#[patch.crates-io]
-# egui = { version = "0.5", git = "https://github.com/emilk/egui" }
-# egui_wgpu_backend = { path = "../egui_wgpu_backend" }
-# egui_winit_platform = { path = "../egui_winit_platform" }
+[features]
+default = ["demo"]
+demo = ["dep:egui_demo_lib"]

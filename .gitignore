@@ -2,3 +2,5 @@
 gen/
 target/
 Cargo.lock
+.vscode/launch.json
+config/

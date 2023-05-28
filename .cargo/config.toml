@@ -1,0 +1,7 @@
+[registries.crates-io]
+protocol = "sparse"
+
+[alias]
+y = "clippy"
+rr = "run --release"
+br = "build --release"
